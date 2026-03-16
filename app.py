@@ -32,24 +32,26 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
 import sqlite3
+from datetime import datetime
 
 app = Flask(__name__)
 
+DB_NAME = 'database.db'
+
 def get_db_connection():
-    conn = sqlite3.connect('events.db')
+    conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row
     return conn
 
 def init_db():
-    if not os.path.exists('tasks.db'):
+    if not os.path.exists(DB_NAME):
         conn = get_db_connection()
         conn.execute('''
-            CREATE TABLE IF NOT EXISTS events (
+            CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                task TEXT NOT NULL,
-                date TEXT NOT NULL,
-                time TEXT NOT NULL,
-                priority TEXT NOT NULL
+                title TEXT NOT NULL,
+                description TEXT,
+                created_at TEXT NOT NULL
             )
         ''')
         conn.commit()
@@ -57,30 +59,42 @@ def init_db():
 
 init_db()
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    conn = get_db_connection()
-    if request.method == 'POST':
-        task = request.form.get('task')
-        date = request.form.get('date')
-        time = request.form.get('time')
-        priority = request.form.get('priority')
-        if task:
-            conn.execute('INSERT INTO events (task, date, time, priority) VALUES (?, ?, ?, ?)', (task, date, time, priority))
-            conn.commit()
-        conn.close()
-        return redirect(url_for('index'))
-    tasks = conn.execute('SELECT * FROM events').fetchall()
-    conn.close()
-    return render_template('index.html', tasks=tasks)
+    return render_template('index.html')
 
-@app.route('/delete/<int:task_id>', methods=['POST'])
-def delete_task(task_id):
+@app.route('/author')
+def author():
+    return render_template('author.html')
+
+@app.route('/planner')
+def planner():
     conn = get_db_connection()
-    conn.execute('DELETE FROM events WHERE id = ?', (task_id,))
+    tasks = conn.execute('SELECT * FROM tasks ORDER BY created_at DESC').fetchall()
+    conn.close()
+    return render_template('planner.html', tasks=tasks)
+
+@app.route('/add_task', methods=['POST'])
+def add_task():
+    title = request.form.get('title')
+    description = request.form.get('description')
+    if title:
+        conn = get_db_connection()
+        conn.execute(
+            'INSERT INTO tasks (title, description, created_at) VALUES (?, ?, ?)',
+            (title, description, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        )
+        conn.commit()
+        conn.close()
+    return redirect(url_for('planner'))
+
+@app.route('/delete/<int:id>', methods=['POST'])
+def delete(id):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM tasks WHERE id = ?', (id,))
     conn.commit()
     conn.close()
-    return redirect(url_for('index'))
+    return redirect(url_for('planner'))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Планувальник{% endblock %}
+
+{% block content %}
+    <h1>Планувальник завдань</h1>
+
+    <form class="add-task-form" action="{{ url_for('add_task') }}" method="post">
+        <label for="title">Назва задачі:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="description">Опис:</label>
+        <textarea id="description" name="description"></textarea>
+        <button type="submit">Додати</button>
+    </form>
+
+    <h2>Список завдань</h2>
+    {% if tasks %}
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task-item">
+                    <div>
+                        <strong>{{ task.title }}</strong>
+                        <p>{{ task.description }}</p>
+                        <small>Створено: {{ task.created_at }}</small>
+                    </div>
+                    <form action="{{ url_for('delete', id=task.id) }}" method="post">
+                        <button type="submit" onclick="return confirm('Видалити цю задачу?');">Видалити</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Завдань поки немає.</p>
+    {% endif %}
+{% endblock %}

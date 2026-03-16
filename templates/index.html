@@ -1,47 +1,10 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Планувальник подій</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <h1>Планувальник подій</h1>
-        
-        <form method="POST" class="event-form">
-            <input type="text" name="task" placeholder="Назва події" required>
-            <div class="row">
-                <input type="date" name="date" required>
-                <input type="time" name="time" required>
-            </div>
-            <select name="priority">
-                <option value="Низький">Низький пріоритет</option>
-                <option value="Середній" selected>Середній пріоритет</option>
-                <option value="Високий">Високий пріоритет</option>
-            </select>
-            <button type="submit">Додати подію</button>
-        </form>
-        <div class="events-list">
-            {% for task in tasks %}
-            <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}">
-                <table class="my-table priority-{{ task.priority }}">
-                    <tr>
-                        <td class="tds-1"><h3>{{ task.task }}</h3></td>
-                        <td class="tds-2"><p>📅 {{ task.date }} | ⏰ {{ task.time }}</p></td>
-                        <td class="tds-3"><span class="badge">{{ task.priority }}</span></td>
-                        <td class="tds-4">
-                            <button type="submit" class="delete-btn">❌</button>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-            {% endfor %}
-        </div>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Головна - Планувальник{% endblock %}
+
+{% block content %}
+    <h1>Веб-планувальник</h1>
+    <p>Цей веб-планувальник допоможе вам організувати свої завдання.</p>
+    <p>Ви можете додавати, переглядати та видаляти свої завдання.</p>
+    <a class="button" href="{{ url_for('planner') }}">Перейти до планувальника</a>
+{% endblock %}
