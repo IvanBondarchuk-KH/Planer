@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+    <div class="book-detail">
+        <h1>{{ book.title }}</h1>
+        <div class="detail-container">
+            <img src="{{ book.image_url or 'https://via.placeholder.com/200x300' }}" alt="{{ book.title }}" class="full-img">
+            <div class="info">
+                <p><strong>Автор:</strong> {{ book.author }}</p>
+                <p><strong>Рік:</strong> {{ book.year }}</p>
+                <p><strong>Опис:</strong></p>
+                <p>{{ book.description }}</p>
+                <a href="{{ url_for('library') }}" class="button">Назад до списку</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
