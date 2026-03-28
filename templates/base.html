@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Планувальник{% endblock %}</title>
+    <title>{% block title %}Бібліотека{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -11,7 +11,7 @@
             <ul class="nav-menu">
                 <li><a href="{{ url_for('index') }}">Головна</a></li>
                 <li><a href="{{ url_for('author') }}">Про автора</a></li>
-                <li><a href="{{ url_for('library') }}">Планувальник</a></li>
+                <li><a href="{{ url_for('library') }}">Бібліотека</a></li>
             </ul>
         </nav>
     </header>
