@@ -153,6 +153,9 @@ h1, h2 {
     border: 1px solid #2d3e50;
     padding: 3px 8px;
     border-radius: 4px;
+    height: 32px;
+    display: flex;
+    align-items: center;
 }
 
 .btn-delete {
@@ -174,4 +177,30 @@ h1, h2 {
     display: flex;
     gap: 30px;
     margin-top: 20px;
+}
+
+.read-book {
+    background-color: #f0fdf4;
+    border-left: 5px solid #22c55e;
+    opacity: 0.8;
+}
+
+.btn-read {
+    background-color: #64748b;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+
+.read-book .btn-read {
+    background-color: #22c55e;
+}
+
+.unique {
+    background-color: red;
+    color: whitesmoke;
+    height: 40px;
 }

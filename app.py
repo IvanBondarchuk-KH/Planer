@@ -20,7 +20,8 @@ def init_db():
             description TEXT,
             year INTEGER,
             image_url TEXT,
-            created_at TEXT NOT NULL
+            created_at TEXT NOT NULL,
+            is_read INTEGER DEFAULT 0
         )
     ''')
     conn.commit()
@@ -73,6 +74,41 @@ def delete_book(id):
     conn = get_db_connection()
     conn.execute('DELETE FROM books WHERE id = ?', (id,))
     conn.commit()
+    conn.close()
+    return redirect(url_for('library'))
+
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_book(id):
+    conn = get_db_connection()
+    book = conn.execute('SELECT * FROM books WHERE id = ?', (id,)).fetchone()
+
+    if request.method == 'POST':
+        title = request.form['title']
+        author = request.form['author']
+        description = request.form['description']
+        year = request.form['year']
+        image_url = request.form['image_url']
+
+        conn.execute('''
+            UPDATE books 
+            SET title = ?, author = ?, description = ?, year = ?, image_url = ?
+            WHERE id = ?
+        ''', (title, author, description, year, image_url, id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('library'))
+
+    conn.close()
+    return render_template('edit_book.html', book=book)
+
+@app.route('/toggle_read/<int:id>', methods=['POST'])
+def toggle_read(id):
+    conn = get_db_connection()
+    book = conn.execute('SELECT is_read FROM books WHERE id = ?', (id,)).fetchone()
+    if book:
+        new_status = 1 if book['is_read'] == 0 else 0
+        conn.execute('UPDATE books SET is_read = ? WHERE id = ?', (new_status, id))
+        conn.commit()
     conn.close()
     return redirect(url_for('library'))
 

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Редагувати книгу{% endblock %}
+
+{% block content %}
+    <h1>Редагувати книгу: {{ book.title }}</h1>
+
+    <form method="post" class="add-task-form">
+        <label>Назва:</label>
+        <input type="text" name="title" value="{{ book.title }}" required>
+        
+        <label>Автор:</label>
+        <input type="text" name="author" value="{{ book.author }}" required>
+        
+        <label>Рік видання:</label>
+        <input type="number" name="year" value="{{ book.year }}">
+        
+        <label>URL зображення:</label>
+        <input type="text" name="image_url" value="{{ book.image_url }}">
+        
+        <label>Опис:</label>
+        <textarea name="description">{{ book.description }}</textarea>
+        
+        <div style="margin-top: 20px;">
+            <button type="submit">Зберегти зміни</button>
+            <a href="{{ url_for('library') }}" class="btn-detail" style="text-decoration: none; margin-left: 10px;">Скасувати</a>
+        </div>
+    </form>
+{% endblock %}
