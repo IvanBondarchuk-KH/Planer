@@ -39,10 +39,18 @@ def author():
 
 @app.route('/library')
 def library():
+    search_query = request.args.get('search', '')
+    
     conn = get_db_connection()
-    books = conn.execute('SELECT * FROM books ORDER BY created_at DESC').fetchall()
+    
+    if search_query:
+        query = "SELECT * FROM books WHERE title LIKE ? OR author LIKE ? ORDER BY created_at DESC"
+        books = conn.execute(query, (f'%{search_query}%', f'%{search_query}%')).fetchall()
+    else:
+        books = conn.execute('SELECT * FROM books ORDER BY created_at DESC').fetchall()
+    
     conn.close()
-    return render_template('library.html', books=books)
+    return render_template('library.html', books=books, search_query=search_query)
 
 @app.route('/book/<int:id>')
 def book_detail(id):
